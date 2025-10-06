@@ -1,0 +1,81 @@
+{
+  "architecture": "Microservice Architecture",
+  "timestamp": "2025-10-01T03:15:01.883408",
+  "tests": [
+    {
+      "test_name": "Account Creation",
+      "duration": 30,
+      "concurrency": 5,
+      "total_requests": 2500,
+      "successful_requests": 2500,
+      "failed_requests": 0,
+      "success_rate": 100.0,
+      "requests_per_second": 152.23602763296682,
+      "avg_response_time": 32.64249486923218,
+      "min_response_time": 11.368989944458008,
+      "max_response_time": 100.69775581359863,
+      "p95_response_time": 64.54209089279175,
+      "failure_status_code_counts": {}
+    },
+    {
+      "test_name": "Account Retrieval",
+      "duration": 30,
+      "concurrency": 10,
+      "total_requests": 2500,
+      "successful_requests": 2500,
+      "failed_requests": 0,
+      "success_rate": 100.0,
+      "requests_per_second": 168.60951260814286,
+      "avg_response_time": 59.10994367599487,
+      "min_response_time": 15.970230102539062,
+      "max_response_time": 156.86321258544922,
+      "p95_response_time": 67.22128391265869,
+      "failure_status_code_counts": {}
+    },
+    {
+      "test_name": "Money Transfer",
+      "duration": 30,
+      "concurrency": 5,
+      "total_requests": 2500,
+      "successful_requests": 2500,
+      "failed_requests": 0,
+      "success_rate": 100.0,
+      "requests_per_second": 21.864195529266023,
+      "avg_response_time": 228.42106666564942,
+      "min_response_time": 59.39531326293945,
+      "max_response_time": 443.4070587158203,
+      "p95_response_time": 268.74239444732666,
+      "failure_status_code_counts": {}
+    },
+    {
+      "test_name": "Money Deposit",
+      "duration": 30,
+      "concurrency": 5,
+      "total_requests": 2500,
+      "successful_requests": 2500,
+      "failed_requests": 0,
+      "success_rate": 100.0,
+      "requests_per_second": 35.4075028676057,
+      "avg_response_time": 141.01939373016359,
+      "min_response_time": 40.79794883728027,
+      "max_response_time": 383.11219215393066,
+      "p95_response_time": 165.2977466583252,
+      "failure_status_code_counts": {}
+    },
+    {
+      "test_name": "High Load Test",
+      "duration": 60,
+      "concurrency": 20,
+      "total_requests": 10000,
+      "successful_requests": 10000,
+      "failed_requests": 0,
+      "success_rate": 100.0,
+      "requests_per_second": 168.36460811762865,
+      "avg_response_time": 118.5414575099945,
+      "min_response_time": 36.13710403442383,
+      "max_response_time": 362.43247985839844,
+      "p95_response_time": 144.04146671295166,
+      "failure_status_code_counts": {}
+    }
+  ]
+}

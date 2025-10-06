@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Banking System - Layered Architecture</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        h1, h2 {
+            color: #333;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        input, select, textarea {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-right: 10px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .result {
+            margin-top: 15px;
+            padding: 10px;
+            background-color: #f8f9fa;
+            border-radius: 4px;
+            border-left: 4px solid #007bff;
+        }
+        .error {
+            border-left-color: #dc3545;
+            background-color: #f8d7da;
+        }
+        .success {
+            border-left-color: #28a745;
+            background-color: #d4edda;
+        }
+        .account-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+        .account-card {
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 15px;
+            background: #f9f9f9;
+        }
+        .transaction-list {
+            max-height: 300px;
+            overflow-y: auto;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            padding: 10px;
+        }
+        .transaction-item {
+            padding: 8px;
+            border-bottom: 1px solid #eee;
+        }
+        .transaction-item:last-child {
+            border-bottom: none;
+        }
+    </style>
+</head>
+<body>
+    <h1>🏦 Banking System - Layered Architecture</h1>
+    
+    <!-- Account Management -->
+    <div class="container">
+        <h2>Account Management</h2>
+        
+        <div class="form-group">
+            <label for="accountName">Account Name:</label>
+            <input type="text" id="accountName" placeholder="Enter account holder name">
+        </div>
+        
+        <div class="form-group">
+            <label for="accountEmail">Email:</label>
+            <input type="email" id="accountEmail" placeholder="Enter email address">
+        </div>
+        
+        <div class="form-group">
+            <label for="initialBalance">Initial Balance:</label>
+            <input type="number" id="initialBalance" placeholder="0.00" step="0.01">
+        </div>
+        
+        <button onclick="createAccount()">Create Account</button>
+        <button onclick="loadAccounts()">Load All Accounts</button>
+        
+        <div id="accountResult" class="result" style="display: none;"></div>
+    </div>
+    
+    <!-- Transaction Management -->
+    <div class="container">
+        <h2>Transaction Management</h2>
+        
+        <div class="form-group">
+            <label for="transactionType">Transaction Type:</label>
+            <select id="transactionType" onchange="toggleTransactionFields()">
+                <option value="deposit">Deposit</option>
+                <option value="withdraw">Withdraw</option>
+                <option value="transfer">Transfer</option>
+            </select>
+        </div>
+        
+        <div class="form-group">
+            <label for="fromAccountId">Account ID:</label>
+            <input type="text" id="fromAccountId" placeholder="Enter account ID">
+        </div>
+        
+        <div class="form-group" id="toAccountGroup" style="display: none;">
+            <label for="toAccountId">To Account ID:</label>
+            <input type="text" id="toAccountId" placeholder="Enter destination account ID">
+        </div>
+        
+        <div class="form-group">
+            <label for="transactionAmount">Amount:</label>
+            <input type="number" id="transactionAmount" placeholder="0.00" step="0.01">
+        </div>
+        
+        <div class="form-group">
+            <label for="transactionDescription">Description:</label>
+            <textarea id="transactionDescription" placeholder="Transaction description (optional)"></textarea>
+        </div>
+        
+        <button onclick="processTransaction()">Process Transaction</button>
+        <button onclick="loadTransactions()">Load Transactions</button>
+        
+        <div id="transactionResult" class="result" style="display: none;"></div>
+    </div>
+    
+    <!-- Account List -->
+    <div class="container">
+        <h2>Accounts</h2>
+        <div id="accountList" class="account-list"></div>
+    </div>
+    
+    <!-- Transaction List -->
+    <div class="container">
+        <h2>Recent Transactions</h2>
+        <div id="transactionList" class="transaction-list"></div>
+    </div>
+
+    <script>
+        const API_BASE = '/api';
+        
+        function toggleTransactionFields() {
+            const transactionType = document.getElementById('transactionType').value;
+            const toAccountGroup = document.getElementById('toAccountGroup');
+            
+            if (transactionType === 'transfer') {
+                toAccountGroup.style.display = 'block';
+            } else {
+                toAccountGroup.style.display = 'none';
+            }
+        }
+        
+        async function createAccount() {
+            const name = document.getElementById('accountName').value;
+            const email = document.getElementById('accountEmail').value;
+            const balance = parseFloat(document.getElementById('initialBalance').value) || 0;
+            
+            if (!name || !email) {
+                showResult('accountResult', 'Please fill in all required fields', 'error');
+                return;
+            }
+            
+            try {
+                const response = await fetch(`${API_BASE}/accounts`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        name: name,
+                        email: email,
+                        initial_balance: balance
+                    })
+                });
+                
+                const result = await response.json();
+                
+                if (response.ok) {
+                    showResult('accountResult', `Account created successfully! ID: ${result.id}`, 'success');
+                    loadAccounts();
+                } else {
+                    showResult('accountResult', `Error: ${result.detail}`, 'error');
+                }
+            } catch (error) {
+                showResult('accountResult', `Network error: ${error.message}`, 'error');
+            }
+        }
+        
+        async function loadAccounts() {
+            try {
+                const response = await fetch(`${API_BASE}/accounts`);
+                const accounts = await response.json();
+                
+                const accountList = document.getElementById('accountList');
+                accountList.innerHTML = '';
+                
+                accounts.forEach(account => {
+                    const accountCard = document.createElement('div');
+                    accountCard.className = 'account-card';
+                    accountCard.innerHTML = `
+                        <h3>${account.name}</h3>
+                        <p><strong>ID:</strong> ${account.id}</p>
+                        <p><strong>Email:</strong> ${account.email}</p>
+                        <p><strong>Balance:</strong> $${account.balance.toFixed(2)}</p>
+                        <p><strong>Created:</strong> ${new Date(account.created_at).toLocaleDateString()}</p>
+                    `;
+                    accountList.appendChild(accountCard);
+                });
+            } catch (error) {
+                showResult('accountResult', `Error loading accounts: ${error.message}`, 'error');
+            }
+        }
+        
+        async function processTransaction() {
+            const type = document.getElementById('transactionType').value;
+            const fromAccountId = document.getElementById('fromAccountId').value;
+            const toAccountId = document.getElementById('toAccountId').value;
+            const amount = parseFloat(document.getElementById('transactionAmount').value);
+            const description = document.getElementById('transactionDescription').value;
+            
+            if (!fromAccountId || !amount) {
+                showResult('transactionResult', 'Please fill in all required fields', 'error');
+                return;
+            }
+            
+            if (type === 'transfer' && !toAccountId) {
+                showResult('transactionResult', 'Please enter destination account ID for transfer', 'error');
+                return;
+            }
+            
+            try {
+                let endpoint, payload;
+                
+                if (type === 'transfer') {
+                    endpoint = '/transactions/transfer';
+                    payload = {
+                        from_account_id: fromAccountId,
+                        to_account_id: toAccountId,
+                        amount: amount,
+                        description: description
+                    };
+                } else {
+                    endpoint = `/transactions/${type}`;
+                    payload = {
+                        account_id: fromAccountId,
+                        amount: amount,
+                        description: description
+                    };
+                }
+                
+                const response = await fetch(`${API_BASE}${endpoint}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(payload)
+                });
+                
+                const result = await response.json();
+                
+                if (response.ok) {
+                    showResult('transactionResult', `Transaction successful! ${result.message}`, 'success');
+                    loadAccounts();
+                    loadTransactions();
+                } else {
+                    showResult('transactionResult', `Error: ${result.detail}`, 'error');
+                }
+            } catch (error) {
+                showResult('transactionResult', `Network error: ${error.message}`, 'error');
+            }
+        }
+        
+        async function loadTransactions() {
+            const accountId = document.getElementById('fromAccountId').value;
+            
+            if (!accountId) {
+                showResult('transactionResult', 'Please enter an account ID to load transactions', 'error');
+                return;
+            }
+            
+            try {
+                const response = await fetch(`${API_BASE}/transactions/${accountId}`);
+                const transactions = await response.json();
+                
+                const transactionList = document.getElementById('transactionList');
+                transactionList.innerHTML = '';
+                
+                if (transactions.length === 0) {
+                    transactionList.innerHTML = '<p>No transactions found for this account.</p>';
+                    return;
+                }
+                
+                transactions.forEach(transaction => {
+                    const transactionItem = document.createElement('div');
+                    transactionItem.className = 'transaction-item';
+                    transactionItem.innerHTML = `
+                        <strong>${transaction.type.toUpperCase()}</strong> - 
+                        $${transaction.amount.toFixed(2)} - 
+                        ${transaction.description || 'No description'} - 
+                        ${new Date(transaction.timestamp).toLocaleString()}
+                    `;
+                    transactionList.appendChild(transactionItem);
+                });
+            } catch (error) {
+                showResult('transactionResult', `Error loading transactions: ${error.message}`, 'error');
+            }
+        }
+        
+        function showResult(elementId, message, type) {
+            const element = document.getElementById(elementId);
+            element.textContent = message;
+            element.className = `result ${type}`;
+            element.style.display = 'block';
+        }
+        
+        // Load accounts on page load
+        window.onload = function() {
+            loadAccounts();
+        };
+    </script>
+</body>
+</html>
+

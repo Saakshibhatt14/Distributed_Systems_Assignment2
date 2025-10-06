@@ -1,0 +1,47 @@
+{
+  "comparison_date": "2025-10-01T03:19:37.656733",
+  "layered_file": "layered_layered_performance_results.json",
+  "microservice_file": "microservice_microservice_performance_results.json",
+  "summary": {
+    "Account Creation": {
+      "layered_throughput": 50.76338752448176,
+      "microservice_throughput": 152.23602763296682,
+      "throughput_ratio": 2.998933582979419,
+      "layered_latency": 98.31984510421753,
+      "microservice_latency": 32.64249486923218,
+      "latency_ratio": 0.33200311528798315
+    },
+    "Account Retrieval": {
+      "layered_throughput": 53.26887898681675,
+      "microservice_throughput": 168.60951260814286,
+      "throughput_ratio": 3.1652536305461054,
+      "layered_latency": 187.6021107673645,
+      "microservice_latency": 59.10994367599487,
+      "latency_ratio": 0.31508144249663583
+    },
+    "Money Transfer": {
+      "layered_throughput": 50.70620083233189,
+      "microservice_throughput": 21.864195529266023,
+      "throughput_ratio": 0.43119372326006955,
+      "layered_latency": 98.49405450820923,
+      "microservice_latency": 228.42106666564942,
+      "latency_ratio": 2.319135584438867
+    },
+    "High Load Test": {
+      "layered_throughput": 54.463456142633156,
+      "microservice_throughput": 168.36460811762865,
+      "throughput_ratio": 3.0913316936167665,
+      "layered_latency": 366.93217182159424,
+      "microservice_latency": 118.5414575099945,
+      "latency_ratio": 0.3230609540763584
+    },
+    "Money Deposit": {
+      "layered_throughput": 50.10755834051513,
+      "microservice_throughput": 35.4075028676057,
+      "throughput_ratio": 0.7066299783954249,
+      "layered_latency": 99.64993505477905,
+      "microservice_latency": 141.01939373016359,
+      "latency_ratio": 1.415147873931309
+    }
+  }
+}

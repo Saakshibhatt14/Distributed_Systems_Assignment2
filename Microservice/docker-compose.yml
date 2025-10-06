@@ -1,0 +1,62 @@
+version: '3.8'
+
+services:
+  # Node 1: API Gateway
+  api-gateway:
+    build: ./api-gateway
+    ports:
+      - "3000:3000"
+    networks:
+      - banking-network
+    depends_on:
+      - account-service
+      - transaction-service
+      - validation-service
+
+  # Node 2: Account Service
+  account-service:
+    build: ./account-service
+    ports:
+      - "5001:5001"
+    networks:
+      - banking-network
+    depends_on:
+      - database-service
+
+  # Node 3: Transaction Service
+  transaction-service:
+    build: ./transaction-service
+    ports:
+      - "5002:5002"
+    networks:
+      - banking-network
+    depends_on:
+      - database-service
+
+  # Node 4: Validation Service
+  validation-service:
+    build: ./validation-service
+    ports:
+      - "5003:5003"
+    networks:
+      - banking-network
+    depends_on:
+      - database-service
+
+  # Node 5: Database Service
+  database-service:
+    build: ./database-service
+    ports:
+      - "5432:5432"
+    volumes:
+      - database_data:/app
+    networks:
+      - banking-network
+
+networks:
+  banking-network:
+    driver: bridge
+
+volumes:
+  database_data:
+
