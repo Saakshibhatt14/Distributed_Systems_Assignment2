@@ -54,7 +54,7 @@ DS_new/
 
 ### 1. Clone the Repository
 ```bash
-git clone <repository-url>
+git clone https://github.com/Saakshibhatt14/Distributed_Systems_Assignment2.git 
 cd DS_new
 ```
 
@@ -349,5 +349,6 @@ This project is for educational purposes and demonstrates distributed systems co
 ---
 
 **Happy Learning! 🎉**
+
 
 This project provides hands-on experience with distributed systems, helping you understand the practical implications of architectural decisions in real-world applications.
